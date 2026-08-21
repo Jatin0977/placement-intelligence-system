@@ -1,0 +1,25 @@
+COMPANY: Google
+ROLE: Software Engineer (University Graduate 2026)
+LOCATION: Bangalore / Hyderabad, India
+
+ELIGIBILITY CRITERIA:
+- Degree: B.Tech / M.Tech in Computer Science (CSE), Information Technology (IT), or Electronics & Communication (ECE).
+- Academic Percentage: Minimum 80% or CGPA 8.0/10 with no active backlogs.
+- Passing Batch: 2026 Graduating Class.
+
+TECHNICAL SKILLS REQUIRED:
+- Strong foundation in Data Structures, Algorithms, and System Design principles.
+- Proficiency in at least one object-oriented programming language: Python, C++, or Java.
+- Experience with Web Technologies (React.js, JavaScript, HTML5, CSS3) is a plus.
+- Knowledge of OS concepts, Multi-threading, Computer Networks, and SQL/NoSQL databases.
+
+ROLES & RESPONSIBILITIES:
+- Design, write, test, and maintain robust code for large-scale applications.
+- Collaborate with cross-functional software development teams globally.
+- Optimize software components for speed, reliability, and security.
+
+SELECTION PROCESS:
+1. Online Coding Assessment (2 DSA Questions - 90 Mins)
+2. Technical Interview Round 1 (Data Structures & Algorithms)
+3. Technical Interview Round 2 (System Design & Code Quality)
+4. Googliness & Leadership Interview

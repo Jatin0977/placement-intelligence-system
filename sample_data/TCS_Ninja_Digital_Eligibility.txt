@@ -1,0 +1,20 @@
+COMPANY: Tata Consultancy Services (TCS)
+ROLE: TCS Ninja & TCS Digital Developer
+LOCATION: Pan-India
+
+ELIGIBILITY & CRITERIA:
+- Eligible Streams: B.Tech / B.E / M.Tech in CSE, IT, ECE, EEE, Mechanical, Civil, and allied engineering streams.
+- TCS Ninja Cutoff: Minimum 60% or 6.0 CGPA throughout 10th, 12th, and B.Tech. Maximum 1 active backlog allowed at time of test.
+- TCS Digital Cutoff: Minimum 70% or 7.0 CGPA throughout academics. Zero active backlogs permitted.
+- Gap Criteria: Overall academic gap should not exceed 24 months.
+
+SKILL REQUIREMENTS & TECH STACK:
+- Programming Languages: Python, Java, C++, C#.
+- Database: SQL, PostgreSQL, MySQL queries and database fundamentals.
+- Web Development: HTML, CSS, JavaScript, React.js (Highly desirable for TCS Digital roles).
+- Core Concepts: Object-Oriented Programming (OOPs), Data Structures, SDLC.
+
+INTERVIEW PREPARATION TOPICS:
+- TCS NQT Cognitive Test: Quantitative Aptitude, Logical Reasoning, Verbal Ability.
+- Technical Round: Basic programming logic, SQL queries, project explanation, OOP concepts.
+- Managerial & HR Round: Communication skills, willingness to relocate, shift flexibility.

@@ -1,0 +1,21 @@
+COMPANY: Accenture India
+ROLE: Associate Software Engineer (ASE) & Advanced ASE
+LOCATION: Bangalore, Pune, Hyderabad, Gurgaon, Chennai
+
+ELIGIBILITY CRITERIA:
+- Streams Allowed: All Engineering branches (CSE, IT, ECE, EEE, Mechanical, Civil, Chemical, AI/ML, Data Science).
+- CGPA Requirement: Minimum 6.5 CGPA or 65% in B.Tech.
+- Backlogs: No active backlogs at the time of joining.
+- Year of Passing: 2026 Batch.
+
+TECHNICAL SKILL REQUIREMENTS:
+- Primary Languages: Java, Python, or JavaScript.
+- Web & Frontend: Fundamentals of HTML5, CSS3, JavaScript, and modern frameworks like React.js or Angular.
+- Backend & Databases: SQL queries, Relational Database Management Systems (RDBMS).
+- Software Engineering: Basic understanding of Agile methodology, Git version control, Cloud fundamentals (AWS/Azure).
+
+SELECTION PROCESS:
+1. Cognitive & Technical Assessment (English Ability, Critical Thinking, Abstract Reasoning, Common Application & MS Office, Pseudo Code).
+2. Coding Assessment (2 Coding Prompts - C, C++, Java, Python).
+3. Communication Assessment.
+4. Technical & HR Interview.
