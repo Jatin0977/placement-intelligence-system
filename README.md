@@ -1,129 +1,319 @@
-# 🎓 Placement Intelligence System (Powered by Corrective RAG)
+# 🎯 Placement Intelligence System
 
-An intelligent, reliable campus placement analysis assistant built for B.Tech students. Powered by **Corrective RAG (CRAG)**, this application allows students to ingest company Job Descriptions (JDs), eligibility matrices, skill requirements, and interview preparation materials to get evidence-backed answers with zero hallucination.
+An AI-powered placement assistant that helps students analyze company job descriptions, eligibility criteria, technical requirements, and compare opportunities across companies using **Corrective Retrieval-Augmented Generation (CRAG)**.
 
----
-
-## 🌟 Key Features
-
-- **Multi-Document Ingestion**: Batch upload PDFs and TXT documents (JDs, eligibility notices, syllabus documents).
-- **Zero-Cloud In-Memory Vector Search**: Uses local Qdrant in-memory vector storage (`location=":memory:"`) powered by OpenAI embeddings.
-- **Corrective RAG Pipeline**:
-  - **Relevance Grader**: LLM evaluates whether retrieved vector chunks contain relevant evidence.
-  - **Query Transformer**: Rewrites underspecified or failed queries into optimized search terms.
-  - **Web Search Fallback**: Integrates Tavily API for external search fallback when document context is missing.
-- **Placement Analytics Dashboard**: Document list overview, chunk breakdown, and vector database specs.
-- **CRAG Execution Inspector**: Visual accordion panel in Streamlit showing step-by-step CRAG execution traces (Grade: RELEVANT vs. INSUFFICIENT, rewritten queries, and source citations).
-- **Student-Friendly UI**: Dark glassmorphic modern design with one-click preset query buttons ("Which companies require React.js?", "Python requirements", "Eligibility cutoffs").
+The system combines **semantic search, vector retrieval, relevance evaluation, query correction, and local LLM generation** to provide answers grounded in uploaded placement documents.
 
 ---
 
-## 🏗 Project Architecture
+## ✨ Features
 
+### 📄 Placement Document Analysis
+- Upload placement-related PDF and TXT documents.
+- Automatically extract and process document content.
+- Split documents into searchable chunks.
+- Store document embeddings in a local vector database.
+
+### 🤖 Placement Q&A
+Ask questions about uploaded company documents, such as:
+- What technical skills are required?
+- Does this role require Python and SQL?
+- What are the eligibility requirements?
+- What qualifications are required?
+- Which companies require a particular technology?
+
+Answers are generated using the information retrieved from the uploaded documents.
+
+### 🔄 Corrective RAG
+The system does not directly generate an answer after the first retrieval. It evaluates whether the retrieved information is relevant to the user's question.
+
+If the retrieved context is insufficient, the system:
+1. **Rewrites the query** into optimized search keywords.
+2. **Performs another retrieval** (or web search fallback).
+3. **Checks the available evidence**.
+4. **Generates an answer** only when sufficient information is available.
+5. **Clearly reports** when the requested information cannot be found in the indexed documents.
+
+This helps eliminate hallucinations and unsupported answers from irrelevant documents.
+
+### ⚖️ Company Comparison
+Compare multiple companies side-by-side using their uploaded placement documents:
+- Technical Skills & Tech Stack
+- Eligibility Requirements & CGPA Cutoffs
+- Interview Rounds & Selection Process
+- Job / Role Requirements
+- Comprehensive Multi-Company Requirements
+
+If a requirement is not mentioned in a company's document, the system explicitly reports `Not mentioned`.
+
+### 📊 Document Analytics
+Overview of all indexed placement documents, chunk metrics, and in-memory vector database specifications.
+
+### 🔍 CRAG Pipeline Inspector
+Visual accordion panel in the Streamlit UI displaying step-by-step CRAG execution traces:
+- Initial retrieval
+- Context relevance evaluation (Grade: `RELEVANT` vs. `INSUFFICIENT`)
+- Query rewriting & transformation
+- Corrective re-retrieval
+- Final grounded answer generation with cited sources
+
+---
+
+## 🧠 How the System Works
+
+The application follows a Corrective RAG architecture:
+
+```text
+                     User Question
+                           │
+                           ▼
+                    Query Processing
+                           │
+                           ▼
+                    Vector Retrieval
+                           │
+                           ▼
+                 Context Relevance Check
+                           │
+                    ┌──────┴──────┐
+                    │             │
+                 Relevant      Insufficient
+                    │             │
+                    ▼             ▼
+             Generate Answer   Rewrite Query
+                    │             │
+                    │             ▼
+                    │        Re-retrieval
+                    │             │
+                    │             ▼
+                    │       Evidence Check
+                    │             │
+                    └──────┬──────┘
+                           ▼
+                  Grounded Response
+                           │
+                           ▼
+                    Source Documents
 ```
-+-----------------------------------------------------------------------------------+
-|                                   STREAMLIT UI                                    |
-|   +--------------------------+    +-----------------------+    +--------------+   |
-|   | Document Management Tab  |    | Placement Q&A Chat UI |    | CRAG Inspector|   |
-|   +--------------------------+    +-----------------------+    +--------------+   |
-+-----------------------------------------|-----------------------------------------+
-                                          |
-                                          v
-+-----------------------------------------------------------------------------------+
-|                                DOCUMENT PIPELINE                                  |
-|   [ PDF / TXT Upload ] -> [ PyPDF/Text Splitter ] -> [ OpenAI Embeddings ]         |
-|                                                                 |                 |
-|                                                                 v                 |
-|                                                     [ Qdrant Vector Store ]       |
-+-----------------------------------------------------------------------------------+
-                                                                  |
-                                                                  v (Similarity Search)
-+-----------------------------------------------------------------------------------+
-|                           CORRECTIVE RAG (CRAG) ENGINE                            |
-|                                                                                   |
-|        +------------------------------------------------------------------+       |
-|        | 1. DOCUMENT RELEVANCE EVALUATOR (LLM Grade: Relevant / Weak)     |       |
-|        +------------------------------------------------------------------+       |
-|                                      |                                            |
-|                  +-------------------+-------------------+                        |
-|                  | (If Relevant)                         | (If Irrelevant/Weak)  |
-|                  v                                       v                        |
-|        +-------------------+                   +-------------------+              |
-|        | 2a. GENERATE      |                   | 2b. QUERY REWRITE |              |
-|        |     RESPONSE      |                   |     & RE-RETRIEVE |              |
-|        +-------------------+                   +-------------------+              |
-|                  |                                       |                        |
-|                  v                                       v                        |
-|        +------------------------------------------------------------------+       |
-|        | 3. FINAL ANSWER GENERATION (With Document Source Attribution)    |       |
-|        +------------------------------------------------------------------+       |
-+-----------------------------------------------------------------------------------+
+
+### Retrieval Flow Comparison
+
+#### Normal Query (Sufficient Context)
+```text
+Question ──► Retrieve Documents ──► Check Relevance (RELEVANT) ──► Generate Answer
+```
+
+#### Corrective Query (Insufficient Context)
+```text
+Question ──► Retrieve Documents ──► Check Relevance (INSUFFICIENT) ──► Rewrite Query ──► Retrieve Again ──► Check Evidence ──► Generate Grounded Answer
 ```
 
 ---
 
-## 🚀 How to Setup & Run (Local Ollama)
+## 🛠️ Tech Stack
 
-### 1. Install & Setup Ollama
-Download and install [Ollama](https://ollama.com/), then pull the required local AI models in your terminal:
-```bash
-ollama pull qwen3:4b
-ollama pull nomic-embed-text
-```
-
-### 2. Activate Environment & Install Dependencies
-```bash
-# Activate your virtual environment
-.venv\Scripts\activate
-
-# Install requirements
-pip install -r requirements.txt
-```
-
-### 3. Launch the Streamlit Application
-```bash
-streamlit run app.py
-```
-
-### 4. Using the Application
-1. Click **"🚀 Load Samples"** in the sidebar to load built-in sample placement JDs (Google, TCS, Accenture) using local `nomic-embed-text` embeddings.
-2. Use the one-click preset prompt buttons or ask custom placement questions:
-   - *"Which companies require React.js?"*
-   - *"What are the eligibility requirements for TCS?"*
-   - *"Compare Google vs Accenture requirements."*
-3. Open the **"🔍 CRAG Pipeline Execution Inspector"** expander under any response to inspect how `qwen3:4b` evaluated evidence and performed query corrections!
-4. Open the **"🔍 CRAG Pipeline Execution Inspector"** expander under any response to see how the Corrective RAG evaluator and query transformer operated!
+| Technology | Purpose |
+| :--- | :--- |
+| **Python** | Core application development |
+| **Streamlit** | Interactive web application interface |
+| **LangChain** | LLM orchestrator and retrieval integration |
+| **Qdrant (In-Memory)** | Local vector database & similarity search |
+| **Ollama** | Local LLM inference engine |
+| **Qwen3 (1.7B)** | Local reasoning & generation model |
+| **Nomic Embed Text** | Text embeddings generation |
+| **PyPDF** | PDF document processing and text extraction |
 
 ---
 
-## 📁 Directory Structure
+## 📂 Project Structure
 
-```
-CRAG/
-├── placement_intel/               # Core Placement Intelligence Package
-│   ├── __init__.py
-│   ├── app.py                     # Streamlit application UI layout & tabs
-│   ├── config.py                  # Default parameters and model definitions
-│   ├── doc_processor.py           # Document loading, PDF extraction, and text splitting
-│   ├── vector_store.py            # Local in-memory Qdrant client manager
-│   ├── crag_engine.py             # Corrective RAG pipeline (Grader, Rewriter, Generator)
-│   └── prompts.py                 # Placement-tailored prompt templates
+```text
+placement-intelligence-system/
 │
-├── sample_data/                   # Sample Placement Documents
+├── app.py                             # Root entry point
+│
+├── placement_intel/                   # Core Package
+│   ├── __init__.py
+│   ├── app.py                         # Streamlit UI layout & tabs
+│   ├── config.py                      # Default parameters & models
+│   ├── crag_engine.py                 # Corrective RAG pipeline
+│   ├── doc_processor.py               # PDF/TXT extraction & chunking
+│   ├── prompts.py                     # Evaluation & generation prompts
+│   └── vector_store.py                # Local in-memory Qdrant client
+│
+├── sample_data/                       # Sample Placement Documents
 │   ├── Google_Software_Engineer_JD.txt
 │   ├── TCS_Ninja_Digital_Eligibility.txt
 │   └── Accenture_ASE_Requirement.txt
 │
-├── app.py                         # Root entry point
-├── requirements.txt               # Dependencies
-└── README.md                      # Project documentation
+├── .streamlit/
+│   └── config.toml
+│
+├── .gitignore
+├── README.md
+└── requirements.txt
 ```
 
 ---
 
-## 🎯 Technical Highlights for Job Interviews
+## ⚙️ Installation & Setup
 
-When presenting this project in AI/ML technical interviews, emphasize:
-1. **Self-Corrective Architecture**: Why standard RAG fails (hallucinations on poor context) and how CRAG solves it through evaluation and query transformation.
-2. **Domain Adaptation**: How general RAG was customized for Placement Intelligence (extracting CGPA cutoffs, allowed streams, tech stacks, selection processes).
-3. **Optimized Vector Infrastructure**: Using local in-memory Qdrant to eliminate cloud latency while preserving full vector similarity search capabilities.
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Jatin0977/placement-intelligence-system.git
+cd placement-intelligence-system
+```
+
+### 2. Create & Activate Virtual Environment
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate on Windows (PowerShell / CMD)
+.venv\Scripts\activate
+
+# Activate on macOS / Linux
+source .venv/bin/activate
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 🤖 Ollama Setup
+
+This project uses Ollama to run models locally on your machine with zero cloud API costs.
+
+1. Download and install [Ollama](https://ollama.com/).
+2. Pull the required models:
+```bash
+# Pull the language model
+ollama pull qwen3:1.7b
+
+# Pull the embedding model
+ollama pull nomic-embed-text
+```
+
+3. Verify installed models:
+```bash
+ollama list
+```
+
+---
+
+## ▶️ Run the Application
+
+With your virtual environment activated:
+
+```bash
+streamlit run app.py
+```
+
+Open your browser at `http://localhost:8501`.
+
+---
+
+## 📚 Using the Application
+
+### Step 1 — Load Placement Documents
+* In the sidebar, click **"🚀 Load Samples"** to automatically index built-in JDs (Google, TCS, Accenture), or upload your own company PDF/TXT documents and click **"📥 Index Files"**.
+
+### Step 2 — Ask Placement Questions
+Use the preset quick triggers or type your own question:
+- *"Which companies require React.js?"*
+- *"What are the eligibility requirements for TCS?"*
+- *"What technical skills are required for Google Software Engineer?"*
+
+### Step 3 — Inspect Corrective Retrieval
+Open the **"🔍 CRAG Pipeline Execution Inspector"** expander under any response to inspect:
+- Context relevance grading (`RELEVANT` vs. `INSUFFICIENT`)
+- Step-by-step trace logs
+- Rewritten queries (when corrective mode is triggered)
+- Cited document evidence
+
+### Step 4 — Multi-Company Comparison
+Switch to the **"⚖️ Company Comparison"** tab to compare requirements side-by-side:
+
+| Requirement | Google | Accenture | TCS |
+| :--- | :--- | :--- | :--- |
+| **Python** | Mentioned | Mentioned | Mentioned |
+| **React.js** | Mentioned | Mentioned | Not mentioned |
+| **CGPA Cutoff** | Not mentioned | 6.5 CGPA | 60% / 6.0 CGPA |
+
+---
+
+## 🧪 Example Queries
+
+- **Technical Skills:**
+  - *"What technical skills are required for Google?"*
+  - *"Does Accenture require Python and SQL?"*
+  - *"Which companies require React.js?"*
+
+- **Eligibility & Criteria:**
+  - *"What are the eligibility criteria and CGPA cutoffs for TCS?"*
+  - *"What qualifications are required for Accenture ASE role?"*
+
+- **Cross-Company Comparison:**
+  - *"Compare Google and Accenture technical requirements."*
+  - *"Compare TCS and Accenture selection process."*
+
+- **Missing Information & Negative Testing:**
+  - *"Which companies require Kubernetes?"*
+  - *(The system will evaluate context, rewrite the query, and accurately state that the information is not present rather than hallucinating).*
+
+---
+
+## 🔐 Security & Privacy
+
+- **Local Execution**: All embeddings and LLM inference run locally on your system via Ollama.
+- **Zero API Costs**: No mandatory cloud LLM subscriptions or external API keys needed.
+- **Ignored Files**: The following files are excluded via `.gitignore`:
+```text
+.env
+.venv/
+__pycache__/
+*.pyc
+```
+
+---
+
+## ⚠️ Limitations
+
+- The current Qdrant vector store is configured for local in-memory storage (`:memory:`).
+- Answer completeness depends on the quality and detail of uploaded placement documents.
+- Local LLM response latency depends on your local hardware specifications (CPU / GPU).
+
+---
+
+## 🔮 Future Improvements
+
+- Persistent vector database storage on disk
+- Resume-to-JD matching and skill gap analysis
+- Placement preparation roadmap recommendations
+- OCR support for scanned placement notices
+
+---
+
+## 🎓 Project Objective
+
+This project demonstrates a production-grade implementation of **Corrective Retrieval-Augmented Generation (CRAG)** applied to campus placement intelligence, combining:
+- Self-corrective retrieval loops
+- Vector similarity search
+- Grounded document attribution
+- Local LLM inference
+
+---
+
+## 👨‍💻 Author
+
+**Jatin Kumar**  
+B.Tech — Computer Science & Engineering (AI & ML)  
+GitHub: [@Jatin0977](https://github.com/Jatin0977)
+
+---
+
+## ⭐ Key Technologies
+`Python` `Streamlit` `LangChain` `Qdrant` `Ollama` `Qwen3` `CRAG` `RAG` `Semantic Search`
